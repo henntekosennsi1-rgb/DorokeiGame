@@ -1,151 +1,184 @@
-# DorokeiGame
+# ドロケイゲーム v3.0
 
-[![Version](https://img.shields.io/badge/version-3.0-green.svg)](https://github.com/henrry/DorokeiGame/releases)
-[![Minecraft](https://img.shields.io/badge/Minecraft-1.21-blue.svg)](https://www.minecraft.net/)
-[![Discord](https://img.shields.io/discord/YOUR_DISCORD_ID?label=Discord&logo=discord)](https://discord.gg/zYY55dzhjd)
-[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
-[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
+警官（鬼）と市民（泥棒）に分かれて遊ぶ、スリル満点の鬼ごっこミニゲームプラグインです。
 
-Advanced cops and robbers tag game plugin with visual effects and tracking systems
+## 🆕 v3.0 新機能
 
-[English](#english) | [日本語](#日本語)
+### ロビーシステム
+- 複数ロビー対応（各ロビー最大20人）
+- 看板クリックまたはコマンドで参加
+- ロビーとゲームエリアの紐付け
+
+### ゲームエリア管理
+- pos1/pos2で矩形エリアを定義
+- エリア外脱出防止
+- 複数エリア作成可能
+
+### 複数インスタンス対応
+- 複数のゲームを同時実行可能
+- config.ymlで設定を永続化
+- サーバー再起動後も設定保持
+
+### 警官自動割り振り
+- プレイヤー数に応じて警官数を自動決定
+- 2-20人に最適化されたバランス
+- 30秒の逃走準備時間
 
 ---
 
-## English
+## 📋 主要機能
 
-### 🎯 Overview
+### UI
+- スコアボード: 残り時間、逃走中/捕獲済人数、役割
+- ボスバー: 残り時間を視覚化（緑→黄→赤）
+- カウントダウン演出
 
-DorokeiGame is an advanced cops and robbers (tag game) plugin for Minecraft servers. Players are divided into cops and robbers, with cops trying to catch all robbers before time runs out. Features include visual effects, real-time tracking, and a comprehensive lobby system.
+### 演出
+- 捕獲時: 画面暗転、雷の音、パーティクル
+- 牢獄内: 移動速度低下、ビーコン表示
+- 救出時: 爆発エフェクト、速度上昇バフ
 
-### ✨ Key Features
+### 追跡システム（常時発動）
+- パーティクル追跡（警官のみ表示）
+- 距離で色変化（赤→黄→青）
+- 方向・距離表示（8方向＋Y座標）
+- 3D心臓鼓動サウンド
+- コンパス更新
 
-#### Game Mechanics
-- **Team-based gameplay** - Cops vs Robbers
-- **Jail & Rescue System** - Caught players can be freed
-- **Time-based Victory** - Robbers win by surviving
-- **Lobby System** - Multiple concurrent games
+---
 
-#### Visual Effects
-- **Capture Effects** - Screen darkening, particles, sounds
-- **Jail Effects** - Movement debuff, visual indicators
-- **Rescue Effects** - Explosion particles, speed boost
-- **Tracking Particles** - Distance-based colors
+## コマンド
 
-#### UI Systems
-- **Scoreboard** - Real-time game stats
-- **Boss Bar** - Visual timer with color changes
-- **Action Bar** - Distance and direction tracking
-- **3D Sound** - Directional heartbeat tracking
+### セットアップコマンド（管理者用）
 
-### 📋 Commands
+| コマンド | 説明 |
+|---------|------|
+| `/dorokei setup spawn` | 初期リスポーン地点設定 |
+| `/dorokei setup lobby <ID> [名前]` | ロビー地点設定 |
+| `/dorokei setup area <ID> pos1 [名前]` | エリア開始点 |
+| `/dorokei setup area <ID> pos2` | エリア終了点 |
+| `/dorokei setup area <ID> jail` | エリア牢獄設定 |
+| `/dorokei setup link <ロビーID> <エリアID>` | 紐付け |
 
-| Command | Description | Permission |
-|---------|-------------|-----------|
-| `/dorokei start` | Start a game | `dorokei.admin` |
-| `/dorokei setpolice <n>` | Set cop count | `dorokei.admin` |
-| `/dorokei settime <sec>` | Set duration | `dorokei.admin` |
-| `/dorokei setjail` | Set jail location | `dorokei.admin` |
-| `/dorokei join` | Join game | `dorokei.play` |
-| `/dorokei leave` | Leave game | `dorokei.play` |
+### プレイヤーコマンド
 
-### 🚀 Installation
+| コマンド | 説明 |
+|---------|------|
+| `/dorokei join <ロビーID>` | ロビーに参加 |
+| `/dorokei leave` | ロビーから退出 |
 
-1. Download the latest release
-2. Place in `plugins/` folder
-3. Restart server
-4. Configure jail: `/dorokei setjail`
-5. Start playing!
+### 管理コマンド
 
-### ⚙️ Configuration
+| コマンド | 説明 |
+|---------|------|
+| `/dorokei list` | ロビー・エリア一覧表示 |
+| `/dorokei gamestart <ロビーID>` | ゲーム開始 |
+
+### 旧コマンド（後方互換）
+
+| コマンド | 説明 |
+|---------|------|
+| `/dorokei start` | 旧方式でゲーム開始 |
+| `/dorokei setpolice <人数>` | 警官人数設定 |
+| `/dorokei settime <秒数>` | ゲーム時間設定 |
+| `/dorokei setjail` | 牢獄地点設定 |
+
+**エイリアス:** `/dk`
+
+---
+
+## セットアップ例
+```bash
+# 1. リスポーン設定
+/dorokei setup spawn
+
+# 2. ロビー作成
+/dorokei setup lobby lobby1 ロビー1
+
+# 3. エリア設定
+/dorokei setup area area1 pos1 エリア1
+/dorokei setup area area1 pos2
+/dorokei setup area area1 jail
+
+# 4. 紐付け
+/dorokei setup link lobby1 area1
+
+# 5. 確認
+/dorokei list
+```
+
+### コマンドブロック設置例
+```
+コマンド: /dorokei gamestart lobby1
+種類: インパルス
+レッドストーン: ボタンで動力供給
+```
+
+---
+
+## 警官自動割り振り
+
+| プレイヤー数 | 警官数 |
+|-------------|--------|
+| 2-4人 | 1人 |
+| 5-6人 | 2人 |
+| 7-8人 | 3人 |
+| 9-11人 | 4人 |
+| 12-14人 | 5人 |
+| 15-17人 | 6人 |
+| 18-20人 | 7人 |
+
+---
+
+## config.yml構造
 ```yaml
-game:
-  default-time: 300
-  default-police: 2
-  min-players: 4
-  
-effects:
-  capture-blindness: true
-  jail-particles: true
-  
-tracking:
-  particle-trails: true
-  compass-update: true
+version: "3.0"
+
+# 初期リスポーン地点
+spawn-location:
+  world: world
+  x: 0.0
+  y: 64.0
+  z: 0.0
+
+# ロビー設定
+lobbies:
+  lobby1:
+    name: "ロビー1"
+    world: world
+    x: 100.0
+    y: 64.0
+    z: 200.0
+    max-players: 20
+    linked-area: area1
+
+# ゲームエリア設定
+game-areas:
+  area1:
+    name: "エリア1"
+    world: world
+    pos1: {x: 50.0, y: 0.0, z: 150.0}
+    pos2: {x: 150.0, y: 256.0, z: 250.0}
+    jail-location: {x: 100.0, y: 64.0, z: 200.0}
+
+# ゲーム設定
+game-settings:
+  game-time: 480                    # ゲーム時間（秒）8分
+  escape-preparation-time: 30       # 逃走準備時間（秒）
 ```
 
 ---
 
-## 日本語
+## 動作環境
+- Spigot/Paper 1.21.x
+- Java 22以上
+- 依存プラグイン: なし
 
-### 🎯 概要
+## コミュニティ
+**Discord:** https://discord.gg/zYY55dzhjd
 
-DorokeiGameは、Minecraft用の高度なドロケイ（鬼ごっこ）プラグインです。プレイヤーは警官と泥棒に分かれ、警官は制限時間内に全ての泥棒を捕まえることを目指します。
+## ライセンス
+MIT License
 
-### ✨ 主な機能
-
-#### ゲームメカニクス
-- **チーム戦** - 警官 vs 泥棒
-- **牢獄と救出システム** - 捕まった仲間を救出可能
-- **時間制限勝利** - 逃げ切れば泥棒の勝利
-- **ロビーシステム** - 複数ゲーム同時進行
-
-#### 視覚効果
-- **捕獲エフェクト** - 画面暗転、パーティクル、効果音
-- **牢獄エフェクト** - 移動速度低下、視覚効果
-- **救出エフェクト** - 爆発パーティクル、スピードブースト
-- **追跡パーティクル** - 距離に応じた色変化
-
-#### UIシステム
-- **スコアボード** - リアルタイムゲーム情報
-- **ボスバー** - 色が変化するタイマー
-- **アクションバー** - 距離と方向表示
-- **3Dサウンド** - 心臓音による追跡
-
-### 📋 コマンド
-
-| コマンド | 説明 | 権限 |
-|---------|------|------|
-| `/dorokei start` | ゲーム開始 | `dorokei.admin` |
-| `/dorokei setpolice <数>` | 警官数設定 | `dorokei.admin` |
-| `/dorokei settime <秒>` | 時間設定 | `dorokei.admin` |
-| `/dorokei setjail` | 牢獄設定 | `dorokei.admin` |
-
-### 🚀 インストール
-
-1. 最新版をダウンロード
-2. `plugins/`フォルダに配置
-3. サーバー再起動
-4. 牢獄設定: `/dorokei setjail`
-5. プレイ開始！
-
----
-
-## 💬 Support
-
-**Discord Server:** https://discord.gg/zYY55dzhjd  
-**MattariMinecraft** - Japanese Minecraft Server
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file
-
-## 👤 Author
-
-**henrry (へんりー)**
-- MattariMinecraft Server Owner/Developer
-
----
-
-<p align="center">
-Made with ❤️ for MattariMinecraft<br>
-© 2024 henrry. All rights reserved.
-</p>
-```
-
-### GitHub Release:
-
-**Tag:** `v3.0`
-
-**Release title:**
-```
-DorokeiGame v3.0 - Lobby System & Enhanced Effects
+## 作者
+へんりー
